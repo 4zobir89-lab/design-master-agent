@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<!--
+  design-master SEED TEMPLATE
+  ---------------------------
+  هذا ملف البذرة الذي يبدأ منه كل موقع. يحتوي على:
+  - نظام tokens كامل في :root (يجب تعديله حسب الـ theme المختار)
+  - CSS reset
+  - الطباعة (typography)
+  - الـ layout (container, grid)
+  - أنماط الأزرار
+  - المرافق (utilities)
+  - reduced-motion fallback
+  - GSAP setup script
+
+  الوكيل: لا تعدّل هذا الملف مباشرة. انسخه وعدّل النسخة.
+  القاعدة الذهبية: "Compose, don't author from scratch."
+-->
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0D0D0D" />
+  <title>— Title here —</title>
+  <meta name="description" content="—" />
+
+  <!-- Fonts: customize per theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;700&family=Reem+Kufi:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================
+       DESIGN TOKENS — customize per theme
+       Default: Noir Cinema
+       ============================================ */
+    :root {
+      /* Backgrounds */
+      --bg: #0D0D0D;
+      --bg-soft: #141414;
+      --surface: #1A1A1A;
+
+      /* Foreground */
+      --fg: #F4F0EA;
+      --fg-muted: #8A8A8A;
+
+      /* Borders (translucent — not solid) */
+      --border: rgba(244, 240, 234, 0.08);
+      --border-strong: rgba(244, 240, 234, 0.16);
+
+      /* Accent — only 1 accent! Use ≤ 2 visible times per screen */
+      --accent: #B58E63;
+      --accent-2: #D9B98C;
+      --accent-soft: rgba(181, 142, 99, 0.12);
+
+      /* Typography */
+      --font-display-ar: "Aref Ruqaa", "Amiri", serif;
+      --font-body-ar: "Noto Naskh Arabic", "Amiri", serif;
+      --font-mono-ar: "Reem Kufi", monospace;
+      --font-display-en: "Cormorant Garamond", serif;
+      --font-body-en: "EB Garamond", Georgia, serif;
+      --font-mono-en: "JetBrains Mono", monospace;
+
+      /* Spacing scale (4-8-12-16-24-32-48-64-96-128-192-256) */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-7: 48px;
+      --space-8: 64px;
+      --space-9: 96px;
+      --space-10: 128px;
+      --space-11: 192px;
+      --space-12: 256px;
+
+      /* Radius — sharp = refined */
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --radius-lg: 8px;
+
+      /* Layout */
+      --container: 1400px;
+      --container-prose: 720px;
+      --container-wide: 1600px;
+      --gutter: clamp(24px, 5vw, 96px);
+
+      /* Motion — Slow Luxury defaults */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-fast: 200ms;
+      --dur-base: 300ms;
+      --dur-slow: 700ms;
+      --dur-hero: 1200ms;
+
+      color-scheme: dark light;
+    }
+
+    /* Light mode override */
+    [data-theme="light"] {
+      --bg: #F4F0EA;
+      --bg-soft: #EDE7DC;
+      --surface: #FFFFFF;
+      --fg: #0D0D0D;
+      --fg-muted: #6B6B6B;
+      --border: rgba(13, 13, 13, 0.08);
+      --border-strong: rgba(13, 13, 13, 0.16);
+      --accent: #8B6B43;
+      --accent-2: #B58E63;
+      --accent-soft: rgba(139, 107, 67, 0.08);
+    }
+
+    /* ============================================
+       RESET
+       ============================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body-ar);
+      font-size: clamp(18px, 1.1vw, 22px);
+      line-height: 1.85;
+      font-weight: 400;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 800ms var(--ease-in-out), color 800ms var(--ease-in-out);
+    }
+
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    /* ============================================
+       FOCUS — never outline:none without this
+       ============================================ */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: var(--radius-sm);
+    }
+
+    a, button { color: inherit; text-decoration: none; }
+
+    /* ============================================
+       TYPOGRAPHY UTILITIES
+       ============================================ */
+    .display-ar {
+      font-family: var(--font-display-ar);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: 0;  /* NEVER add letter-spacing to Arabic */
+    }
+
+    .display-en {
+      font-family: var(--font-display-en);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;  /* display ≥ 48px needs negative tracking */
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono-en);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;  /* ALL CAPS rule: ≥ 0.06em */
+      text-transform: uppercase;
+      color: var(--accent);
+      display: inline-block;
+    }
+
+    .section-num {
+      font-family: var(--font-mono-ar);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--fg-muted);
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .pull-quote {
+      font-family: var(--font-display-ar);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--fg);
+    }
+
+    .prose { max-width: 65ch; }  /* max line length for readability */
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+      position: relative;
+      z-index: 2;
+    }
+    .container-prose { max-width: var(--container-prose); }
+    .container-wide { max-width: var(--container-wide); }
+
+    section {
+      position: relative;
+      padding-block: clamp(80px, 12vw, 192px);
+      z-index: 2;
+    }
+
+    /* ============================================
+       SECTION HEADER (reusable)
+       ============================================ */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-6);
+      margin-bottom: clamp(48px, 6vw, 96px);
+      padding-bottom: var(--space-5);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header__main {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-5);
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-family: var(--font-display-ar);
+      font-size: clamp(36px, 5.5vw, 72px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: 0;  /* no letter-spacing on Arabic */
+      color: var(--fg);
+    }
+
+    .section-header__meta {
+      font-family: var(--font-mono-en);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      direction: ltr;
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 16px 32px;
+      font-family: var(--font-body-ar);
+      font-size: 17px;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      position: relative;
+      transition: background-color 300ms var(--ease-out),
+                  color 300ms var(--ease-out),
+                  border-color 300ms var(--ease-out);
+      will-change: transform;
+    }
+
+    .btn--primary {
+      background: var(--accent);
+      color: var(--bg);
+      border: 1px solid var(--accent);
+    }
+    .btn--primary:hover {
+      background: var(--accent-2);
+      border-color: var(--accent-2);
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border-strong);
+    }
+    .btn--ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn__arrow {
+      width: 16px;
+      height: 16px;
+      transition: transform 300ms var(--ease-out);
+    }
+    .btn:hover .btn__arrow { transform: translateX(-4px); }  /* RTL */
+
+    /* ============================================
+       CUSTOM CURSOR (desktop only)
+       ============================================ */
+    .cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 28px; height: 28px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 300ms var(--ease-out), height 300ms var(--ease-out),
+                  background-color 300ms var(--ease-out);
+      mix-blend-mode: difference;
+      will-change: transform;
+    }
+    .cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 4px; height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+    .cursor.is-hovering {
+      width: 56px; height: 56px;
+      background: var(--accent-soft);
+    }
+    @media (hover: none), (max-width: 1023px) {
+      .cursor, .cursor-dot { display: none; }
+    }
+
+    /* ============================================
+       PROGRESS BAR
+       ============================================ */
+    .progress {
+      position: fixed;
+      top: 0; inset-inline-start: 0;
+      width: 100%; height: 2px;
+      z-index: 1000; pointer-events: none;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      transform-origin: top left;
+      transform: scaleX(0);
+      will-change: transform;
+    }
+
+    /* ============================================
+       REDUCED MOTION — MANDATORY
+       ============================================ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+  <!-- === SECTION TEMPLATE ===
+  Copy this for each section:
+
+  <section id="<name>" data-bg="#0D0D0D">
+    <div class="container container-wide">
+      <div class="section-header">
+        <div class="section-header__main">
+          <span class="section-num">٠١</span>
+          <h2 class="section-title">عنوان القسم</h2>
+        </div>
+        <span class="section-header__meta">Section Name</span>
+      </div>
+
+      <!-- content here -->
+    </div>
+  </section>
+  -->
+
+  <main id="top">
+    <!-- Sections go here -->
+  </main>
+
+  <!-- ============================================
+       SCRIPTS
+       ============================================ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+    /* ==========================================
+       Environment detection
+       ========================================== */
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isTouch = window.matchMedia("(hover: none)").matches;
+    const isMobile = window.innerWidth < 768;
+
+    /* ==========================================
+       LENIS SMOOTH SCROLL — desktop only
+       ========================================== */
+    let lenis = null;
+    if (!reduceMotion && !isTouch && window.Lenis) {
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false,
+      });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    /* ==========================================
+       PROGRESS BAR
+       ========================================== */
+    ScrollTrigger.create({
+      trigger: document.body,
+      start: "top top", end: "bottom bottom",
+      onUpdate: (self) => {
+        gsap.to("#progressBar", {
+          scaleX: self.progress,
+          duration: 0.1, ease: "none", overwrite: true,
+        });
+      },
+    });
+
+    /* ==========================================
+       CUSTOM CURSOR (desktop only)
+       ========================================== */
+    if (!isTouch && !isMobile) {
+      const cursor = document.getElementById("cursor");
+      const dot = document.getElementById("cursorDot");
+      const xTo = gsap.quickTo(cursor, "x", { duration: 0.5, ease: "power3.out" });
+      const yTo = gsap.quickTo(cursor, "y", { duration: 0.5, ease: "power3.out" });
+      const xToDot = gsap.quickTo(dot, "x", { duration: 0.1, ease: "power3.out" });
+      const yToDot = gsap.quickTo(dot, "y", { duration: 0.1, ease: "power3.out" });
+
+      window.addEventListener("mousemove", (e) => {
+        xTo(e.clientX); yTo(e.clientY);
+        xToDot(e.clientX); yToDot(e.clientY);
+      });
+
+      document.querySelectorAll("a, button, [data-magnetic]").forEach((el) => {
+        el.addEventListener("mouseenter", () => cursor.classList.add("is-hovering"));
+        el.addEventListener("mouseleave", () => cursor.classList.remove("is-hovering"));
+      });
+    }
+
+    /* ==========================================
+       MAGNETIC BUTTONS (desktop only)
+       ========================================== */
+    if (!isTouch && !isMobile) {
+      document.querySelectorAll("[data-magnetic]").forEach((btn) => {
+        const xTo = gsap.quickTo(btn, "x", { duration: 0.4, ease: "power3.out" });
+        const yTo = gsap.quickTo(btn, "y", { duration: 0.4, ease: "power3.out" });
+
+        btn.addEventListener("mousemove", (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          xTo(x * 0.3);  // 0.3 = magnetic strength
+          yTo(y * 0.3);
+        });
+
+        btn.addEventListener("mouseleave", () => {
+          xTo(0); yTo(0);
+        });
+      });
+    }
+
+    /* ==========================================
+       SMOOTH SCROLL ON ANCHORS
+       ========================================== */
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", (e) => {
+        const target = document.querySelector(anchor.getAttribute("href"));
+        if (target) {
+          e.preventDefault();
+          if (lenis) {
+            lenis.scrollTo(target, { offset: -80, duration: 1.2 });
+          } else {
+            gsap.to(window, {
+              duration: 1.2,
+              scrollTo: { y: target, offsetY: 80 },
+              ease: "power3.inOut",
+            });
+          }
+        }
+      });
+    });
+
+    /* ==========================================
+       BACKGROUND COLOR TRANSITIONS
+       ========================================== */
+    if (!reduceMotion) {
+      gsap.utils.toArray("[data-bg]").forEach((section) => {
+        const bg = section.dataset.bg;
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 50%", end: "bottom 50%",
+          onEnter: () => gsap.to("body", { backgroundColor: bg, duration: 0.8, ease: "power2.inOut" }),
+          onEnterBack: () => gsap.to("body", { backgroundColor: bg, duration: 0.8, ease: "power2.inOut" }),
+        });
+      });
+    }
+
+    /* ==========================================
+       SCROLLTRIGGER REFRESH ON LOAD
+       ========================================== */
+    window.addEventListener("load", () => {
+      ScrollTrigger.refresh();
+    });
+  </script>
+</body>
+</html>

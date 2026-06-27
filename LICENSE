@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Wasewm
+Copyright (c) 2026 4zobir89-lab
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+## Acknowledgments
+
+This system is derived from three open-source repositories. Their original
+licenses are preserved:
+
+- **open-design** (https://github.com/nexu-io/open-design) — Apache-2.0
+- **impeccable** (https://github.com/pbakaus/impeccable) — MIT
+- **gsap-animated-frontend** (https://github.com/yousefabdullah171/gsap-animated-frontend) — MIT

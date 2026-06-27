@@ -1,0 +1,138 @@
+name: Design Audit CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'examples/**'
+      - 'seeds/**'
+      - 'references/**'
+      - 'scripts/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'examples/**'
+      - 'seeds/**'
+      - 'references/**'
+      - 'scripts/**'
+  workflow_dispatch:
+
+jobs:
+  audit-seed:
+    name: Audit Seed Template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run audit on seeds/template.html
+        run: |
+          # Create a temporary project dir with seed
+          mkdir -p /tmp/seed-test
+          cp seeds/template.html /tmp/seed-test/index.html
+
+          # Run audit
+          python scripts/audit.py /tmp/seed-test
+
+          # Check if audit.md was written
+          if [ ! -f /tmp/seed-test/.design/audit.md ]; then
+            echo "❌ audit.md not written"
+            exit 1
+          fi
+
+          # Display the report
+          echo "### 📊 Audit Report for seeds/template.html" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat /tmp/seed-test/.design/audit.md >> $GITHUB_STEP_SUMMARY
+
+  audit-examples:
+    name: Audit Example Projects
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example: []
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Find example projects
+        id: find
+        run: |
+          # Find all directories containing index.html in examples/
+          examples=$(find examples -name "index.html" -not -path "*/node_modules/*" -exec dirname {} \; 2>/dev/null || true)
+          echo "examples<<EOF" >> $GITHUB_OUTPUT
+          echo "$examples" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Run audit on each example
+        if: steps.find.outputs.examples != ''
+        run: |
+          for example in ${{ steps.find.outputs.examples }}; do
+            echo "Auditing: $example"
+            python scripts/audit.py "$example" || true
+          done
+
+  test-discover:
+    name: Test discover.py
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Test discovery on various inputs
+        run: |
+          echo "### 🔍 Discovery Tests" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          tests=(
+            "أريد موقع شخصي لشاعر عربي معاصر، سينمائي"
+            "build a SaaS landing for an AI startup"
+            "أريد موقع متجر قهوة مختصة، دافئ وفاخر"
+            "create a portfolio for a photographer, dark and editorial"
+            "موقع شركة تقنية، عصري وجريء"
+          )
+
+          for test in "${tests[@]}"; do
+            echo "#### Input: $test" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            python scripts/discover.py "$test" >> $GITHUB_STEP_SUMMARY 2>&1
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          done
+
+  validate-scripts:
+    name: Validate Python Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Syntax check
+        run: |
+          for script in scripts/*.py; do
+            echo "Checking: $script"
+            python -m py_compile "$script"
+          done
+
+      - name: Help check
+        run: |
+          python scripts/discover.py --help || true
+          python scripts/audit.py --help || true
